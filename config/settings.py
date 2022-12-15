@@ -50,7 +50,11 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated', # make all endpoints private
-    )
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'accounts.auth.SafeJWTAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
 }
 
 AUTH_USER_MODEL = 'accounts.User'

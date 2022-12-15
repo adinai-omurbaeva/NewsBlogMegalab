@@ -9,14 +9,18 @@ from rest_framework import generics
 from django.views.decorators.csrf import ensure_csrf_cookie
 from accounts.serializers import UserSerializer, RegisterSerializer
 from accounts.utils import generate_access_token, generate_refresh_token
+import jwt
+from django.views.decorators.csrf import csrf_protect
 
-@api_view(['GET'])
-@permission_classes([AllowAny])
-@ensure_csrf_cookie
-def profile(request):
-    user = request.user
-    serialized_user = UserSerializer(user).data
-    return Response({'user': serialized_user })
+
+class DetailUserApiView(generics.ListAPIView):
+    permission_classes = (AllowAny,)
+    
+    def get(self, request):
+        user = request.user
+        serialized_user = UserSerializer(user).data
+    
+        return Response({'user': serialized_user })
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -49,6 +53,38 @@ def login_view(request):
     }
 
     return response
+    
+@api_view(['POST'])
+@permission_classes([AllowAny])
+@csrf_protect
+def refresh_token_view(request):
+    '''
+    To obtain a new access_token this view expects 2 important things:
+        1. a cookie that contains a valid refresh_token
+        2. a header 'X-CSRFTOKEN' with a valid csrf token, client app can get it from cookies "csrftoken"
+    '''
+    User = get_user_model()
+    refresh_token = request.COOKIES.get('refreshtoken')
+    if refresh_token is None:
+        raise exceptions.AuthenticationFailed(
+            'Authentication credentials were not provided.')
+    try:
+        payload = jwt.decode(
+            refresh_token, settings.REFRESH_TOKEN_SECRET, algorithms=['HS256'])
+    except jwt.ExpiredSignatureError:
+        raise exceptions.AuthenticationFailed(
+            'expired refresh token, please login again.')
+
+    user = User.objects.filter(id=payload.get('user_id')).first()
+    if user is None:
+        raise exceptions.AuthenticationFailed('User not found')
+
+    if not user.is_active:
+        raise exceptions.AuthenticationFailed('user is inactive')
+
+
+    access_token = generate_access_token(user)
+    return Response({'access_token': access_token})
 
 
 class RegisterUserAPIView(generics.CreateAPIView):
