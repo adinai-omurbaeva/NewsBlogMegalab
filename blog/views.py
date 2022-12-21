@@ -10,3 +10,7 @@ class NewsViewSet(viewsets.ModelViewSet):
     serializer_class = NewsSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = NewsFilter
+
+    def perform_create(self, serializer):
+        request = serializer.context['request']
+        serializer.save(author=request.user)
