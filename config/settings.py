@@ -56,7 +56,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated', # make all endpoints private
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'accounts.auth.SafeJWTAuthentication',
+        # 'accounts.auth.SafeJWTAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': (

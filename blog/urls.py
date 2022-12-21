@@ -1,8 +1,12 @@
 from django.urls import path
-from blog.views import NewsList
+from rest_framework import routers
+from . import views
 
+router = routers.DefaultRouter()
+router.register('article', viewset=views.NewsViewSet)
 
 urlpatterns = [
-    path('news', NewsList.as_view()),
     
 ]
+
+urlpatterns += router.urls
