@@ -2,16 +2,14 @@ from django.db import models
 from accounts.models import User
 
 
+class NewsCategory(models.Model):
+    name = models.CharField(max_length=255)
+
+
 class News(models.Model):
-    THEME_CHOISES = (
-        ("sport", 'Спорт'),
-        ("politic", 'Политика'),
-        ("celebrity", 'Звезды'),
-        ("art", 'Искусство'),
-        ("fashion", 'Мода'),
-    )
     title = models.CharField(max_length=255)
-    theme = models.CharField(choices=THEME_CHOISES, max_length=255, verbose_name='Тематика')
+    category = models.ForeignKey(NewsCategory, on_delete=models.CASCADE)
+    # theme = models.CharField(max_length=255, default='')
     image = models.ImageField()
     text = models.CharField(max_length=255)
     date = models.DateField(auto_now=True, blank=True)

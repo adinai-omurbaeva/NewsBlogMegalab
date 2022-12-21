@@ -18,6 +18,7 @@ from django.urls import path
 from accounts import urls as accounts_urls
 from django.conf.urls import include
 from rest_framework_simplejwt import views as jwt_views
+from blog import urls as blog_urls
 
 
 urlpatterns = [
@@ -25,4 +26,5 @@ urlpatterns = [
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path("admin/", admin.site.urls),
     path('accounts/', include(accounts_urls)),
+    path('', include(blog_urls)),
 ]
