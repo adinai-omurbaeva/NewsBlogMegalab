@@ -19,6 +19,8 @@ from accounts import urls as accounts_urls
 from django.conf.urls import include
 from rest_framework_simplejwt import views as jwt_views
 from blog import urls as blog_urls
+from django.conf.urls.static import static
+from django.conf import settings
 
 
 urlpatterns = [
@@ -27,4 +29,4 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('accounts/', include(accounts_urls)),
     path('', include(blog_urls)),
-]
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

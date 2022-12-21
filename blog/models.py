@@ -10,7 +10,7 @@ class News(models.Model):
     title = models.CharField(max_length=255)
     category = models.ForeignKey(NewsCategory, on_delete=models.CASCADE)
     # theme = models.CharField(max_length=255, default='')
-    image = models.ImageField()
+    image = models.ImageField(upload_to='static/images/')
     text = models.CharField(max_length=255)
     date = models.DateField(auto_now=True, blank=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
