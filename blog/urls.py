@@ -4,6 +4,7 @@ from . import views
 
 router = routers.DefaultRouter()
 router.register('article', viewset=views.NewsViewSet)
+router.register('favorite', viewset=views.FavoriteViewSet)
 
 urlpatterns = [
     
