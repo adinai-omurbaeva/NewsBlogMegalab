@@ -1,5 +1,5 @@
 from django.contrib import admin
-from blog.models import News, Favorite, Comment, NewsCategory
+from blog.models import News, Favorite, NewsCategory, Comment
 
 
 @admin.register(News)
@@ -14,7 +14,7 @@ class FavoriteAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('username', 'text', 'date', 'news')
+    list_display = ('user', 'content', 'date_posted', 'news', 'parent')
 
 
 @admin.register(NewsCategory)

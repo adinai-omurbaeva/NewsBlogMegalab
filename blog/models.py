@@ -16,10 +16,27 @@ class News(models.Model):
 
 
 class Comment(models.Model):
-    username = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     news = models.ForeignKey(News, on_delete=models.CASCADE)
-    text = models.CharField(max_length=255)
-    date = models.DateField(auto_now=True, blank=True)
+    content = models.CharField(max_length=255)
+    date_posted = models.DateField(auto_now_add=True, blank=True)
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
+
+    class Meta:
+        ordering = ['-date_posted']
+
+    def __str__(self):
+        return str(self.user) + ' comment ' + str(self.content)
+
+    @property
+    def children(self):
+        return Comment.objects.filter(parent=self).reverse()
+
+    @property
+    def is_parent(self):
+        if self.parent is None:
+            return True
+        return False
 
 
 class Favorite(models.Model):
