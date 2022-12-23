@@ -1,4 +1,6 @@
 from django.db import models
+# from jsonschema.exceptions import ValidationError
+from django import forms
 from accounts.models import User
 
 
@@ -27,6 +29,11 @@ class Comment(models.Model):
 
     def __str__(self):
         return str(self.user) + ' comment ' + str(self.content)
+
+    def clean(self):
+        if self.parent:
+            if self.parent.news != self.news:
+                raise forms.ValidationError('parent.news должно совпадать с news')
 
     @property
     def children(self):

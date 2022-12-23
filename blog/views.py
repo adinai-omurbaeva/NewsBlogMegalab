@@ -1,3 +1,4 @@
+from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 
 from blog.filters import NewsFilter
@@ -8,7 +9,7 @@ from django_filters import rest_framework as filters
 
 
 class NewsViewSet(viewsets.ModelViewSet):
-    queryset = News.objects.all()
+    queryset = News.objects.all().order_by('-date')
     serializer_class = NewsSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = NewsFilter
@@ -42,19 +43,21 @@ class FavoriteViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-# class CommentCreateAPIView(generics.CreateAPIView):
-#     queryset = Comment.objects.all()
-#     serializer_class = CommentSerializer
-#
-#     def create(self, request, *args, **kwargs):
-#         user = request.user
-#
-    # def perform_create(self, serializer):
-    #     request = serializer.context['request']
-    #     try:
-    #         parent = serializer.validated_data['parent']
-    #     except:
-    #         parent = None
-    #
-    #     new_comment = Comment(user=request.user, parent=parent)
-    #     new_comment.save()
+class CommentCreateAPIView(generics.CreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+    def perform_create(self, serializer):
+        news = serializer.validated_data['news']
+
+        try:
+            parent = serializer.validated_data['parent']
+        except:
+            serializer.save(user=self.request.user)
+            return Response(serializer.data)
+
+        if parent.news == news:
+            serializer.save(user=self.request.user)
+        else:
+            raise APIException("news в комментарии не совпадает с news в parent")
+

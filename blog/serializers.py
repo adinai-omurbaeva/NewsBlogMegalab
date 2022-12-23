@@ -32,7 +32,7 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'news', 'content', 'date_posted', 'parent', 'reply')
 
     def get_reply(self, new_comment):
-        my_comment = Comment.objects.filter(parent=new_comment)
+        my_comment = Comment.objects.filter(parent=new_comment).order_by('-date_posted')
         final_comment = CommentSerializer(instance=my_comment, many=True)
         return final_comment.data
 
@@ -47,6 +47,6 @@ class NewsDetailSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'category_name', 'category', 'image', 'text', 'date', 'username', 'comments')
 
     def get_comments(self, article):
-        my_comment = Comment.objects.filter(news=article, parent=None)
+        my_comment = Comment.objects.filter(news=article, parent=None).order_by('-date_posted')
         final_comment = CommentSerializer(instance=my_comment, many=True)
         return final_comment.data

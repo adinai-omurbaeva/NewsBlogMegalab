@@ -8,7 +8,7 @@ router.register('favorite', viewset=views.FavoriteViewSet)
 
 
 urlpatterns = [
-
+    path('article/comment', views.CommentCreateAPIView.as_view()),
 ]
 
 urlpatterns += router.urls
