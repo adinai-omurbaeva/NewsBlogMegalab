@@ -25,7 +25,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username', read_only=True)
-    reply = serializers.SerializerMethodField('get_reply', read_only=True)
+    reply = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Comment
@@ -35,6 +35,13 @@ class CommentSerializer(serializers.ModelSerializer):
         my_comment = Comment.objects.filter(parent=new_comment).order_by('-date_posted')
         final_comment = CommentSerializer(instance=my_comment, many=True)
         return final_comment.data
+
+    def validate(self, data):
+        news = data['news']
+        parent_news = data['parent'].news
+        if parent_news != news:
+            raise serializers.ValidationError('news parent must be the same as news')
+        return data
 
 
 class NewsDetailSerializer(serializers.ModelSerializer):

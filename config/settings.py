@@ -64,7 +64,7 @@ REST_FRAMEWORK = {
     ),
 }
 
-AUTH_USER_MODEL = 'accounts.User'
+
 REFRESH_TOKEN_SECRET='123'
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

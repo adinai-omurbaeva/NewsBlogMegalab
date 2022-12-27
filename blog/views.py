@@ -15,13 +15,12 @@ class NewsViewSet(viewsets.ModelViewSet):
     filterset_class = NewsFilter
 
     def perform_create(self, serializer):
-        request = serializer.context['request']
-        serializer.save(author=request.user)
+        serializer.save(author=self.request.user)
 
-    def retrieve(self, request, pk=None):
-        serializer_class = NewsDetailSerializer
-        instance = self.get_object()
-        return Response(serializer_class(instance).data)
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return NewsDetailSerializer
+        return self.serializer_class
 
 
 class FavoriteViewSet(viewsets.ModelViewSet):
@@ -29,13 +28,13 @@ class FavoriteViewSet(viewsets.ModelViewSet):
     queryset = Favorite.objects.all()
 
     def perform_create(self, serializer):
-        request = serializer.context['request']
+        user = self.request.user
         news = serializer.validated_data['news']
-        instance = Favorite.objects.filter(user=request.user, news=news)
+        instance = Favorite.objects.filter(user=user, news=news)
         if instance:
             instance.delete()
         else:
-            serializer.save(user=request.user)
+            serializer.save(user=user)
 
     def get_queryset(self):
         user = self.request.user
@@ -48,16 +47,5 @@ class CommentCreateAPIView(generics.CreateAPIView):
     serializer_class = CommentSerializer
 
     def perform_create(self, serializer):
-        news = serializer.validated_data['news']
-
-        try:
-            parent = serializer.validated_data['parent']
-        except:
-            serializer.save(user=self.request.user)
-            return Response(serializer.data)
-
-        if parent.news == news:
-            serializer.save(user=self.request.user)
-        else:
-            raise APIException("news в комментарии не совпадает с news в parent")
+        serializer.save(user=self.request.user)
 
