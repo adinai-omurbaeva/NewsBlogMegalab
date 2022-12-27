@@ -19,7 +19,7 @@ class News(models.Model):
 
 
 class Comment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     news = models.ForeignKey(News, on_delete=models.CASCADE)
     content = models.CharField(max_length=255)
     date_posted = models.DateField(auto_now_add=True, blank=True)
@@ -30,21 +30,6 @@ class Comment(models.Model):
 
     def __str__(self):
         return str(self.user) + ' comment ' + str(self.content)
-
-    def clean(self):
-        if self.parent:
-            if self.parent.news != self.news:
-                raise forms.ValidationError('parent.news должно совпадать с news')
-
-    @property
-    def children(self):
-        return Comment.objects.filter(parent=self).reverse()
-
-    @property
-    def is_parent(self):
-        if self.parent is None:
-            return True
-        return False
 
 
 class Favorite(models.Model):

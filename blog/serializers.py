@@ -37,10 +37,11 @@ class CommentSerializer(serializers.ModelSerializer):
         return final_comment.data
 
     def validate(self, data):
-        news = data['news']
-        parent_news = data['parent'].news
-        if parent_news != news:
-            raise serializers.ValidationError('news parent must be the same as news')
+        parent = data.get('parent')
+        if parent is not None:
+            news = data['news']
+            if parent.news != news:
+                raise serializers.ValidationError('news parent must be the same as news')
         return data
 
 

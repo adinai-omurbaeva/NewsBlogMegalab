@@ -1,21 +1,16 @@
-from rest_framework.exceptions import APIException
-from rest_framework.response import Response
-
 from blog.filters import NewsFilter
 from blog.serializers import NewsSerializer, FavoriteSerializer, NewsDetailSerializer, CommentSerializer
 from blog.models import News, Favorite, Comment
 from rest_framework import viewsets, generics
 from django_filters import rest_framework as filters
+from .utils import RequestUser
 
 
-class NewsViewSet(viewsets.ModelViewSet):
+class NewsViewSet(RequestUser, viewsets.ModelViewSet):
     queryset = News.objects.all().order_by('-date')
     serializer_class = NewsSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = NewsFilter
-
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
@@ -42,10 +37,8 @@ class FavoriteViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class CommentCreateAPIView(generics.CreateAPIView):
+class CommentCreateAPIView(RequestUser, generics.CreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
 
