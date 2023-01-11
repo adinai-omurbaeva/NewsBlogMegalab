@@ -8,7 +8,7 @@ class NewsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = News
-        fields = ('id', 'title', 'category_name', 'category', 'image', 'text', 'date', 'author')
+        fields = ('id', 'title', 'description', 'category_name', 'category', 'image', 'text', 'date', 'author')
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
@@ -52,7 +52,7 @@ class NewsDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = News
-        fields = ('id', 'title', 'category_name', 'category', 'image', 'text', 'date', 'username', 'comments')
+        fields = ('id', 'title', 'description', 'category_name', 'category', 'image', 'text', 'date', 'username', 'comments')
 
     def get_comments(self, article):
         my_comment = Comment.objects.filter(news=article, parent=None).order_by('-date_posted')
