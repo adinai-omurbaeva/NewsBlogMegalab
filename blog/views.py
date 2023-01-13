@@ -1,3 +1,5 @@
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from blog.filters import NewsFilter
 from blog.serializers import NewsSerializer, FavoriteSerializer, NewsDetailSerializer, CommentSerializer
 from blog.models import News, Favorite, Comment
@@ -18,23 +20,24 @@ class NewsViewSet(RequestUser, viewsets.ModelViewSet):
         return self.serializer_class
 
 
-class FavoriteViewSet(viewsets.ModelViewSet):
-    serializer_class = FavoriteSerializer
-    queryset = Favorite.objects.all()
-
-    def perform_create(self, serializer):
+class FavoriteViewSet(APIView):
+    def get(self, request):
         user = self.request.user
-        news = serializer.validated_data['news']
-        instance = Favorite.objects.filter(user=user, news=news)
-        if instance:
-            instance.delete()
+        queryset = News.objects.filter(favorite_news__user=user)
+        serializer = NewsSerializer(queryset, many=True, context={'request':request})
+        return Response(serializer.data)
+
+    def post(self, request):
+        user = request.user
+        news_data = {'news':request.data.get('news'), 'user':user.id}
+        serializer = FavoriteSerializer(data=news_data)
+        serializer.is_valid(raise_exception=True)
+        favorite_news = Favorite.objects.filter(**news_data)
+        if favorite_news.exists():
+            favorite_news.delete()
         else:
-            serializer.save(user=user)
-
-    def get_queryset(self):
-        user = self.request.user
-        queryset = Favorite.objects.filter(user=user)
-        return queryset
+            serializer.save()
+        return Response(serializer.data)
 
 
 class CommentCreateAPIView(RequestUser, generics.CreateAPIView):
@@ -42,3 +45,11 @@ class CommentCreateAPIView(RequestUser, generics.CreateAPIView):
     serializer_class = CommentSerializer
 
 
+class MyArticleListAPIView(generics.ListAPIView):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = News.objects.filter(author=user)
+        return queryset

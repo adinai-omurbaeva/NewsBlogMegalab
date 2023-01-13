@@ -5,22 +5,26 @@ from blog.models import News, Favorite, Comment
 class NewsSerializer(serializers.ModelSerializer):
     category_name = serializers.CharField(source='category.name', read_only=True)
     author = serializers.StringRelatedField(default=serializers.CurrentUserDefault(), read_only=True)
+    is_favorite = serializers.SerializerMethodField('get_is_favorite', read_only=True)
 
     class Meta:
         model = News
-        fields = ('id', 'title', 'description', 'category_name', 'category', 'image', 'text', 'date', 'author')
+        fields = ('id', 'title', 'description', 'category_name', 'category', 'image', 'text', 'date', 'author',
+                  'is_favorite')
+
+    def get_is_favorite(self, news):
+        print(self.context)
+        user = self.context['request'].user
+        if Favorite.objects.filter(user=user, news=news).exists():
+            return True
+        else:
+            return False
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(default=serializers.CurrentUserDefault(), read_only=True)
-
     class Meta:
         model = Favorite
-        fields = ('user', 'news')
-
-    def get_request(self, user):
-        queryset = Favorite.objects.filter(user=user)
-        return queryset
+        fields = "__all__"
 
 
 class CommentSerializer(serializers.ModelSerializer):

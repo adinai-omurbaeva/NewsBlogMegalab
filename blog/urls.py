@@ -4,11 +4,12 @@ from . import views
 
 router = routers.DefaultRouter()
 router.register('article', viewset=views.NewsViewSet)
-router.register('favorite', viewset=views.FavoriteViewSet)
 
 
 urlpatterns = [
     path('article/comment/', views.CommentCreateAPIView.as_view()),
+    path('myarticle/', views.MyArticleListAPIView.as_view()),
+    path('favorite/', views.FavoriteViewSet.as_view()),
 ]
 
 urlpatterns += router.urls
