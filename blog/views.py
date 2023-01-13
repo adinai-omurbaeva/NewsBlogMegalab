@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from blog.filters import NewsFilter
 from blog.serializers import NewsSerializer, FavoriteSerializer, NewsDetailSerializer, CommentSerializer
 from blog.models import News, Favorite, Comment
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, filters as s_filters
 from django_filters import rest_framework as filters
 from .utils import RequestUser
 
@@ -11,8 +11,9 @@ from .utils import RequestUser
 class NewsViewSet(RequestUser, viewsets.ModelViewSet):
     queryset = News.objects.all().order_by('-date')
     serializer_class = NewsSerializer
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (filters.DjangoFilterBackend, s_filters.SearchFilter)
     filterset_class = NewsFilter
+    search_fields = ['title']
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
