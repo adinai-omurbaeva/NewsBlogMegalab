@@ -9,6 +9,9 @@
 
 ## Summary
 
+[Документация в Postman](https://www.postman.com/adinai-omurbaeva/workspace/newsblogmegalab/documentation/10420266-0de44cd8-cb22-4be6-a7ce-b259d0571482?entity=folder-4400ea06-1d08-45ab-b484-1295139abff2)
+[Pythonanywhere](https://adinaiomurbaeva.pythonanywhere.com)
+
 Вашим заданием на близжайшие 4 недели будет реализовать API по дизайну.
 
 - [Дизайн](https://www.figma.com/file/tvDHJjr7Nj1rrD3qoUs9v7/%D0%BD%D0%BE%D0%B2%D0%BE%D1%81%D1%82%D0%BD%D0%BE%D0%B9-%D0%BF%D0%BE%D1%80%D1%82%D0%B0%D0%BB?node-id=0%3A1)
