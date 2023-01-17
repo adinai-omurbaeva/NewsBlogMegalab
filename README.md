@@ -1,3 +1,7 @@
+[Документация в Postman](https://www.postman.com/adinai-omurbaeva/workspace/newsblogmegalab/documentation/10420266-0de44cd8-cb22-4be6-a7ce-b259d0571482?entity=folder-4400ea06-1d08-45ab-b484-1295139abff2)
+
+[Pythonanywhere](https://adinaiomurbaeva.pythonanywhere.com)
+
 # News Blog
 
 - [Table of Contents](#news-blog)
