@@ -32,5 +32,18 @@ def test_login(test_user):
 def test_profile(test_user):
     url = reverse('profile_user')
     client.force_authenticate(test_user)
-    responce = client.get(url)
-    assert responce.status_code == 200
+    response = client.get(url)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_change_password(test_user):
+    url = reverse('change_password')
+    new_pass = fake.password()
+    data = {'old_password': 'TestPass123',
+            'password': new_pass,
+            'password2': new_pass
+            }
+    client.force_authenticate(user=test_user)
+    response = client.post(url, data)
+    assert response.status_code == 200
