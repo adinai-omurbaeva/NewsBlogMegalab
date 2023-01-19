@@ -12,7 +12,7 @@ class UserFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ('username',)
 
     username = fake.user_name()
-    is_staff = 'True'
+    is_staff = True
     password = 'TestPass123'
     last_name = fake.last_name()
     first_name = fake.first_name()
