@@ -1,5 +1,4 @@
 from rest_framework import serializers
-# from accounts.models import User
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 
@@ -67,7 +66,6 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
 
     def update_password(self, validated_data):
         user = self.context['user']
-        # print(self.data)
         new_pass = validated_data['password']
         user.set_password(new_pass)
         user.save()

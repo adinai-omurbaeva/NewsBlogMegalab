@@ -15,10 +15,7 @@ class NewsSerializer(serializers.ModelSerializer):
     def get_is_favorite(self, news):
         print(self.context)
         user = self.context['request'].user
-        if Favorite.objects.filter(user=user, news=news).exists():
-            return True
-        else:
-            return False
+        return Favorite.objects.filter(user=user, news=news).exists()
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
@@ -36,9 +33,9 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'news', 'content', 'date_posted', 'parent', 'reply')
 
     def get_reply(self, new_comment):
-        my_comment = Comment.objects.filter(parent=new_comment).order_by('-date_posted')
-        final_comment = CommentSerializer(instance=my_comment, many=True)
-        return final_comment.data
+        comment = Comment.objects.filter(parent=new_comment).order_by('-date_posted')
+        serializer = CommentSerializer(instance=comment, many=True)
+        return serializer.data
 
     def validate(self, data):
         parent = data.get('parent')
@@ -59,6 +56,6 @@ class NewsDetailSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'description', 'category_name', 'category', 'image', 'text', 'date', 'username', 'comments')
 
     def get_comments(self, article):
-        my_comment = Comment.objects.filter(news=article, parent=None).order_by('-date_posted')
-        final_comment = CommentSerializer(instance=my_comment, many=True)
-        return final_comment.data
+        comment = Comment.objects.filter(news=article, parent=None).order_by('-date_posted')
+        serializer = CommentSerializer(instance=comment, many=True)
+        return serializer.data
