@@ -31,7 +31,7 @@ def test_news_create(test_user, test_category):
 
 @pytest.mark.django_db
 def test_news_delete(test_user, test_news):
-    url = reverse('article-detail', kwargs={'pk': test_user.id})
+    url = reverse('article-detail', kwargs={'pk': test_news.id})
     client.force_authenticate(test_user)
     response = client.delete(url)
     assert response.status_code == 204

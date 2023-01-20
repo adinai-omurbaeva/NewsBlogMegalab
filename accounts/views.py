@@ -16,6 +16,15 @@ class DetailUserApiView(APIView):
     
         return Response(serialized_user)
 
+    def patch(self, request):
+        user = User.objects.get(id=request.user.id)
+        serializer = UserSerializer(instance=user, data=request.data, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response({'msg': 'User profile is updated', 'data': serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({'msg': 'Wrong parameters'})
+
 
 class RegisterUserAPIView(generics.CreateAPIView):
     permission_classes = (AllowAny,)

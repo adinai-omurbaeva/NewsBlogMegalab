@@ -18,6 +18,7 @@ factory-boy = "^3.2.1"
 pytest-factoryboy = "^2.5.1"
 pytest-django = "^4.5.2"
 setuptools = "^66.0.0"
+psycopg2-binary = "^2.9.5"
 
 [tool.poetry.dev-dependencies]
 black = "^22.10.0"
